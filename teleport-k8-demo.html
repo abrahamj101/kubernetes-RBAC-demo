@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kubernetes RBAC Demo - Joshua Abraham</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; overflow: hidden; }
+        .slide { display: none; height: 100vh; width: 100vw; padding: 4rem; flex-direction: column; justify-content: center; animation: fadeIn 0.5s ease-in-out; }
+        .active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .code-font { font-family: 'Fira Code', monospace; background: #1e293b; padding: 2px 6px; border-radius: 4px; color: #38bdf8; }
+        .limitations-table th, .limitations-table td { padding: 1rem; border-bottom: 1px solid #334155; }
+        .nav-btn { position: fixed; bottom: 2rem; padding: 0.5rem 1rem; background: #334155; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .nav-btn:hover { background: #475569; }
+    </style>
+</head>
+<body>
+
+    <section class="slide active text-center">
+        <div class="mb-8"><i class="fa-brands fa-kubernetes text-8xl text-blue-500"></i></div>
+        <h1 class="text-6xl font-bold mb-4">Kubernetes RBAC Demo</h1>
+        <p class="text-2xl text-slate-400 mb-8">Joshua Abraham | Associate Field Engineer Candidate</p>
+        <p class="code-font text-lg">github.com/abrahamj101/teleport-k8s-demo</p>
+    </section>
+
+    <section class="slide">
+        <h2 class="text-4xl font-bold mb-8 text-blue-400 border-b border-blue-400 pb-2">The Problem We're Solving</h2>
+        <div class="grid grid-cols-2 gap-12 items-center">
+            <div class="space-y-6 text-xl">
+                <p class="flex items-start"><i class="fa-solid fa-triangle-exclamation text-red-500 mt-1 mr-4"></i> <span><strong>Blast Radius:</strong> Every user has admin rights by default.</span></p>
+                <p class="flex items-start"><i class="fa-solid fa-biohazard text-red-500 mt-1 mr-4"></i> <span><strong>Security:</strong> One compromised account = full cluster takeover.</span></p>
+                <p class="flex items-start"><i class="fa-solid fa-eye-slash text-red-500 mt-1 mr-4"></i> <span><strong>Audit:</strong> No containment or traceability.</span></p>
+                <div class="mt-8 p-4 bg-blue-900/30 border-l-4 border-blue-500">
+                    <p class="font-bold text-blue-300">Solution: Least-privilege access via Kubernetes RBAC</p>
+                </div>
+            </div>
+            <div class="text-center">
+                <i class="fa-solid fa-unlock-keyhole text-[12rem] text-slate-700 opacity-50"></i>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h2 class="text-4xl font-bold mb-8 text-blue-400 border-b border-blue-400 pb-2">Architecture Diagram</h2>
+        <div class="bg-slate-800/50 p-8 rounded-xl border border-slate-700">
+            <div class="flex flex-col items-center space-y-4 text-lg">
+                <div class="p-4 bg-blue-600 rounded-lg w-64 text-center font-bold">kind cluster (teleport-demo)</div>
+                <div class="h-8 w-1 bg-slate-500"></div>
+                <div class="p-4 bg-indigo-600 rounded-lg w-80 text-center font-bold">namespace: nginx-app</div>
+                <div class="flex space-x-8 mt-4">
+                    <div class="flex flex-col items-center">
+                        <div class="h-8 w-1 bg-slate-500"></div>
+                        <div class="p-3 border border-slate-400 rounded bg-slate-900 w-48 text-center text-sm">Role: nginx-deployer</div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="h-8 w-1 bg-slate-500"></div>
+                        <div class="p-3 border border-slate-400 rounded bg-slate-900 w-48 text-center text-sm">RoleBinding → deploy-user</div>
+                    </div>
+                </div>
+                <div class="h-8 w-1 bg-green-500"></div>
+                <div class="p-4 bg-green-700 rounded-lg w-80 text-center font-bold italic">Nginx Deployment (Deployed by deploy-user)</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h2 class="text-4xl font-bold mb-8 text-blue-400 border-b border-blue-400 pb-2">Identity via Certificates</h2>
+        <div class="grid grid-cols-2 gap-8">
+            <ul class="space-y-8 text-xl">
+                <li class="flex items-center"><span class="bg-blue-500 h-8 w-8 rounded-full flex items-center justify-center mr-4 text-sm font-bold">1</span> CSR with <span class="code-font ml-2">CN=deploy-user</span></li>
+                <li class="flex items-center"><span class="bg-blue-500 h-8 w-8 rounded-full flex items-center justify-center mr-4 text-sm font-bold">2</span> Signed by Cluster Root CA</li>
+                <li class="flex items-center"><span class="bg-blue-500 h-8 w-8 rounded-full flex items-center justify-center mr-4 text-sm font-bold">3</span> Embedded in <span class="code-font ml-2">kubeconfig</span></li>
+                <li class="flex items-center"><span class="bg-blue-500 h-8 w-8 rounded-full flex items-center justify-center mr-4 text-sm font-bold">4</span> K8s reads cert → Enforces RBAC</li>
+            </ul>
+            <div class="bg-slate-900 p-6 rounded-lg border border-slate-700 flex items-center justify-center text-center">
+                <div>
+                    <i class="fa-solid fa-id-card text-8xl text-indigo-400 mb-4"></i>
+                    <p class="text-slate-400 uppercase tracking-widest font-bold">Certificate-Based Identity</p>
+                    <p class="text-sm text-slate-500">No passwords. No tokens.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <h2 class="text-4xl font-bold mb-8 text-blue-400 border-b border-blue-400 pb-2">Advantages vs Limitations</h2>
+        <table class="w-full limitations-table text-left">
+            <thead class="bg-slate-800">
+                <tr>
+                    <th class="text-green-400"><i class="fa-solid fa-check mr-2"></i> Advantages (Native K8s)</th>
+                    <th class="text-red-400"><i class="fa-solid fa-xmark mr-2"></i> Limitations (The Scale Gap)</th>
+                </tr>
+            </thead>
+            <tbody class="text-lg">
+                <tr><td>Least-privilege enforced</td><td>Certs can't be revoked easily</td></tr>
+                <tr><td>Namespace isolation</td><td>Static kubeconfig files (Risk)</td></tr>
+                <tr><td>No admin credentials needed</td><td>No MFA or Audit trail</td></tr>
+                <tr><td>Native Kubernetes behavior</td><td>Doesn't scale manually</td></tr>
+            </tbody>
+        </table>
+        <div class="mt-12 text-center p-6 bg-indigo-900/20 border-2 border-dashed border-indigo-500 rounded-xl">
+            <h3 class="text-2xl font-bold text-indigo-300">→ This is exactly what Teleport solves</h3>
+            <p class="text-slate-400">Automated, short-lived, and audited identity-based access.</p>
+        </div>
+    </section>
+
+    <div style="left: 2rem;" class="nav-btn" onclick="prevSlide()">← Back</div>
+    <div style="right: 2rem;" class="nav-btn" onclick="nextSlide()">Next →</div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+
+        function showSlide(index) {
+            slides.forEach(s => s.classList.remove('active'));
+            slides[index].classList.add('active');
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+    </script>
+</body>
+</html>
