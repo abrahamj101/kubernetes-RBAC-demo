@@ -1,4 +1,4 @@
-# Teleport K8s Demo — Joshua Abraham
+# Teleport K8s Demo 
 
 ## Overview
 This project deploys a Kubernetes cluster using kind and demonstrates
@@ -22,7 +22,7 @@ kind cluster (teleport-demo)
 
 ## Quick Start
 ```bash
-git clone <your-repo-url>
+git clone [https://github.com/abrahamj101/teleport-k8s-demo/](https://github.com/abrahamj101/teleport-k8s-demo/)
 cd teleport
 chmod +x scripts/setup.sh
 ./scripts/setup.sh
