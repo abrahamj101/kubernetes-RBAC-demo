@@ -22,7 +22,7 @@ kind cluster (teleport-demo)
 
 ## Quick Start
 ```bash
-git clone [https://github.com/abrahamj101/teleport-k8s-demo/](https://github.com/abrahamj101/teleport-k8s-demo/)
+git clone https://github.com/abrahamj101/teleport-k8s-demo/
 cd teleport
 chmod +x scripts/setup.sh
 ./scripts/setup.sh
