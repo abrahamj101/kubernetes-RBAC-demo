@@ -9,106 +9,206 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; overflow: hidden; }
-        .slide { display: none; height: 100vh; width: 100vw; padding: 4rem; flex-direction: column; justify-content: center; animation: fadeIn 0.5s ease-in-out; }
+        .slide { display: none; height: 100vh; width: 100vw; padding: 4rem; flex-direction: column; justify-content: center; animation: fadeIn 0.4s ease-in-out; }
         .active { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .code-font { font-family: 'Fira Code', monospace; background: #1e293b; padding: 2px 6px; border-radius: 4px; color: #38bdf8; }
-        .limitations-table th, .limitations-table td { padding: 1rem; border-bottom: 1px solid #334155; }
-        .nav-btn { position: fixed; bottom: 2rem; padding: 0.5rem 1rem; background: #334155; border-radius: 8px; cursor: pointer; transition: 0.3s; }
-        .nav-btn:hover { background: #475569; }
+        .limitations-table th { padding: 1.5rem 1rem; border-bottom: 2px solid #334155; font-size: 1.5rem; }
+        .limitations-table td { padding: 1.25rem 1rem; border-bottom: 1px solid #334155; font-size: 1.25rem; }
+        .nav-btn { position: fixed; bottom: 2rem; padding: 0.5rem 1rem; background: #334155; border-radius: 8px; cursor: pointer; transition: 0.3s; z-index: 100; opacity: 0.4; }
+        .nav-btn:hover { background: #475569; opacity: 1; }
     </style>
 </head>
 <body>
 
     <section class="slide active text-center">
-        <div class="mb-8"><i class="fa-brands fa-kubernetes text-8xl text-blue-500"></i></div>
-        <h1 class="text-6xl font-bold mb-4">Kubernetes RBAC Demo</h1>
-        <p class="text-2xl text-slate-400 mb-8">Joshua Abraham | Associate Field Engineer Candidate</p>
-        <p class="code-font text-lg">github.com/abrahamj101/teleport-k8s-demo</p>
+        <div class="mb-8"><i class="fa-brands fa-kubernetes text-9xl text-blue-500"></i></div>
+        <h1 class="text-7xl font-bold mb-4">Kubernetes RBAC Demo</h1>
+        <p class="text-3xl text-slate-400">Joshua Abraham</p>
+        <p class="text-xl text-slate-500 mt-4 italic">Associate Field Engineer Candidate</p>
     </section>
 
     <section class="slide">
-        <h2 class="text-4xl font-bold mb-8 text-blue-400 border-b border-blue-400 pb-2">The Problem We're Solving</h2>
-        <div class="grid grid-cols-2 gap-12 items-center">
-            <div class="space-y-6 text-xl">
+        <h2 class="text-4xl font-bold mb-12 text-blue-400 border-b border-blue-400 pb-2">The Problem We're Solving</h2>
+        <div class="grid grid-cols-2 gap-12 items-center text-center md:text-left">
+            <div class="space-y-8 text-2xl">
                 <p class="flex items-start"><i class="fa-solid fa-triangle-exclamation text-red-500 mt-1 mr-4"></i> <span><strong>Blast Radius:</strong> Every user has admin rights by default.</span></p>
                 <p class="flex items-start"><i class="fa-solid fa-biohazard text-red-500 mt-1 mr-4"></i> <span><strong>Security:</strong> One compromised account = full cluster takeover.</span></p>
                 <p class="flex items-start"><i class="fa-solid fa-eye-slash text-red-500 mt-1 mr-4"></i> <span><strong>Audit:</strong> No containment or traceability.</span></p>
-                <div class="mt-8 p-4 bg-blue-900/30 border-l-4 border-blue-500">
+                <div class="mt-12 p-6 bg-blue-900/30 border-l-4 border-blue-500">
                     <p class="font-bold text-blue-300">Solution: Least-privilege access via Kubernetes RBAC</p>
                 </div>
             </div>
-            <div class="text-center">
-                <i class="fa-solid fa-unlock-keyhole text-[12rem] text-slate-700 opacity-50"></i>
+            <div class="hidden md:block">
+                <i class="fa-solid fa-unlock-keyhole text-[15rem] text-slate-700 opacity-40"></i>
             </div>
         </div>
     </section>
 
     <section class="slide">
-        <h2 class="text-4xl font-bold mb-8 text-blue-400 border-b border-blue-400 pb-2">Architecture Diagram</h2>
-        <div class="bg-slate-800/50 p-8 rounded-xl border border-slate-700">
-            <div class="flex flex-col items-center space-y-4 text-lg">
-                <div class="p-4 bg-blue-600 rounded-lg w-64 text-center font-bold">kind cluster (teleport-demo)</div>
-                <div class="h-8 w-1 bg-slate-500"></div>
-                <div class="p-4 bg-indigo-600 rounded-lg w-80 text-center font-bold">namespace: nginx-app</div>
-                <div class="flex space-x-8 mt-4">
+        <h2 class="text-4xl font-bold mb-6 text-blue-400 border-b border-blue-400 pb-2 text-center">Architecture Diagram</h2>
+        <div class="bg-slate-800/40 p-8 rounded-2xl border border-slate-700 shadow-2xl">
+            <div class="flex flex-col items-center space-y-3">
+    
+                <div class="p-3 bg-blue-600 rounded-lg w-72 text-center font-bold text-lg">kind cluster (teleport-demo)</div>
+                <div class="h-6 w-1 bg-slate-500"></div>
+    
+                <div class="p-3 bg-indigo-600 rounded-lg w-96 text-center font-bold text-lg">namespace: nginx-app</div>
+                <div class="h-6 w-1 bg-slate-500"></div>
+    
+                <div class="flex items-center justify-center space-x-4">
+    
                     <div class="flex flex-col items-center">
-                        <div class="h-8 w-1 bg-slate-500"></div>
-                        <div class="p-3 border border-slate-400 rounded bg-slate-900 w-48 text-center text-sm">Role: nginx-deployer</div>
+                        <div class="p-3 border-2 border-slate-400 rounded-lg bg-slate-900 w-48 text-center shadow-lg">
+                            <p class="text-xs uppercase tracking-widest text-slate-400 mb-1">Role</p>
+                            <p class="font-bold text-white">nginx-deployer</p>
+                            <p class="text-[10px] text-slate-500 mt-1 leading-tight font-mono">get, list, create,<br>update, delete</p>
+                        </div>
                     </div>
+    
                     <div class="flex flex-col items-center">
-                        <div class="h-8 w-1 bg-slate-500"></div>
-                        <div class="p-3 border border-slate-400 rounded bg-slate-900 w-48 text-center text-sm">RoleBinding → deploy-user</div>
+                        <p class="text-[10px] text-indigo-300 mb-1 uppercase tracking-tighter">references</p>
+                        <div class="text-indigo-400 text-2xl"><i class="fa-solid fa-arrow-right"></i></div>
+                    </div>
+    
+                    <div class="flex flex-col items-center">
+                        <div class="p-3 border-2 border-indigo-500 rounded-lg bg-slate-900 w-48 text-center shadow-lg">
+                            <p class="text-xs uppercase tracking-widest text-indigo-400 mb-1">RoleBinding</p>
+                            <p class="font-bold text-indigo-300">nginx-binding</p>
+                        </div>
+                    </div>
+    
+                    <div class="flex flex-col items-center">
+                        <p class="text-[10px] text-green-300 mb-1 uppercase tracking-tighter">grants to</p>
+                        <div class="text-green-400 text-2xl"><i class="fa-solid fa-arrow-right"></i></div>
+                    </div>
+    
+                    <div class="flex flex-col items-center">
+                        <div class="p-3 border-2 border-green-500 rounded-lg bg-slate-900 w-48 text-center shadow-lg">
+                            <i class="fa-solid fa-user text-green-400 text-lg mb-1"></i>
+                            <p class="text-xs uppercase tracking-widest text-green-400 mb-1">User</p>
+                            <p class="font-bold text-green-300">deploy-user</p>
+                        </div>
                     </div>
                 </div>
-                <div class="h-8 w-1 bg-green-500"></div>
-                <div class="p-4 bg-green-700 rounded-lg w-80 text-center font-bold italic">Nginx Deployment (Deployed by deploy-user)</div>
+    
+                <div class="h-6 w-1 bg-green-500"></div>
+                <p class="text-[10px] text-green-400 uppercase tracking-widest font-bold">authenticated action</p>
+                <div class="h-4 w-1 bg-green-500"></div>
+    
+                <div class="p-4 bg-green-700 rounded-lg w-96 text-center font-bold text-lg shadow-xl border border-green-400/30">
+                    🟢 Nginx Deployment (nginx-app)
+                </div>
             </div>
         </div>
     </section>
 
     <section class="slide">
-        <h2 class="text-4xl font-bold mb-8 text-blue-400 border-b border-blue-400 pb-2">Identity via Certificates</h2>
-        <div class="grid grid-cols-2 gap-8">
-            <ul class="space-y-8 text-xl">
-                <li class="flex items-center"><span class="bg-blue-500 h-8 w-8 rounded-full flex items-center justify-center mr-4 text-sm font-bold">1</span> CSR with <span class="code-font ml-2">CN=deploy-user</span></li>
-                <li class="flex items-center"><span class="bg-blue-500 h-8 w-8 rounded-full flex items-center justify-center mr-4 text-sm font-bold">2</span> Signed by Cluster Root CA</li>
-                <li class="flex items-center"><span class="bg-blue-500 h-8 w-8 rounded-full flex items-center justify-center mr-4 text-sm font-bold">3</span> Embedded in <span class="code-font ml-2">kubeconfig</span></li>
-                <li class="flex items-center"><span class="bg-blue-500 h-8 w-8 rounded-full flex items-center justify-center mr-4 text-sm font-bold">4</span> K8s reads cert → Enforces RBAC</li>
-            </ul>
-            <div class="bg-slate-900 p-6 rounded-lg border border-slate-700 flex items-center justify-center text-center">
-                <div>
-                    <i class="fa-solid fa-id-card text-8xl text-indigo-400 mb-4"></i>
-                    <p class="text-slate-400 uppercase tracking-widest font-bold">Certificate-Based Identity</p>
-                    <p class="text-sm text-slate-500">No passwords. No tokens.</p>
+        <h2 class="text-4xl font-bold mb-12 text-blue-400 border-b border-blue-400 pb-2">Identity via mTLS Certificates</h2>
+        
+        <div class="flex items-center justify-between px-10">
+            
+            <div class="flex flex-col items-center space-y-4 w-1/5">
+                <div class="p-6 bg-slate-800 border-2 border-slate-500 rounded-xl text-center">
+                    <i class="fa-solid fa-key text-3xl text-yellow-400 mb-2"></i>
+                    <p class="text-xs font-bold uppercase tracking-widest">Private Key</p>
+                    <p class="text-[10px] text-slate-400 mt-1">Generated Locally</p>
                 </div>
+            </div>
+
+            <i class="fa-solid fa-chevron-right text-slate-600 text-2xl"></i>
+
+            <div class="flex flex-col items-center space-y-4 w-1/5">
+                <div class="p-6 bg-slate-800 border-2 border-blue-500 rounded-xl text-center">
+                    <i class="fa-solid fa-file-signature text-3xl text-blue-400 mb-2"></i>
+                    <p class="text-xs font-bold uppercase tracking-widest">CSR</p>
+                    <p class="text-[10px] text-slate-400 mt-1">CN=deploy-user</p>
+                </div>
+            </div>
+
+            <i class="fa-solid fa-chevron-right text-slate-600 text-2xl"></i>
+
+            <div class="flex flex-col items-center space-y-4 w-1/5">
+                <div class="p-6 bg-indigo-900/40 border-2 border-indigo-500 rounded-xl text-center relative">
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-indigo-500 text-[8px] px-2 py-0.5 rounded-full font-bold">CLUSTER CA</div>
+                    <i class="fa-solid fa-stamp text-3xl text-indigo-400 mb-2"></i>
+                    <p class="text-xs font-bold uppercase tracking-widest">SIGNATURE</p>
+                    <p class="text-[10px] text-slate-400 mt-1">Verified Trust</p>
+                </div>
+            </div>
+
+            <i class="fa-solid fa-chevron-right text-slate-600 text-2xl"></i>
+
+            <div class="flex flex-col items-center space-y-4 w-1/5">
+                <div class="p-6 bg-green-900/20 border-2 border-green-500 rounded-xl text-center">
+                    <i class="fa-solid fa-id-card text-3xl text-green-400 mb-2"></i>
+                    <p class="text-xs font-bold uppercase tracking-widest">Kubeconfig</p>
+                    <p class="text-[10px] text-slate-400 mt-1">Identity Assigned</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-16 grid grid-cols-2 gap-8 text-xl">
+            <div class="p-6 bg-slate-800/50 border-l-4 border-blue-500 rounded">
+                <h4 class="font-bold text-blue-300 mb-2">Authentication</h4>
+                <p class="text-slate-400 text-lg">Cluster verifies the CA signature. "Who are you?" → <span class="code-font">deploy-user</span></p>
+            </div>
+            <div class="p-6 bg-slate-800/50 border-l-4 border-indigo-500 rounded">
+                <h4 class="font-bold text-indigo-300 mb-2">Authorization</h4>
+                <p class="text-slate-400 text-lg">Cluster checks RBAC rules. "What can you do?" → <span class="code-font">create deployment</span></p>
             </div>
         </div>
     </section>
 
     <section class="slide">
         <h2 class="text-4xl font-bold mb-8 text-blue-400 border-b border-blue-400 pb-2">Advantages vs Limitations</h2>
-        <table class="w-full limitations-table text-left">
+        <table class="w-full limitations-table text-left shadow-2xl">
             <thead class="bg-slate-800">
                 <tr>
-                    <th class="text-green-400"><i class="fa-solid fa-check mr-2"></i> Advantages (Native K8s)</th>
-                    <th class="text-red-400"><i class="fa-solid fa-xmark mr-2"></i> Limitations (The Scale Gap)</th>
+                    <th class="text-green-400"><i class="fa-solid fa-check mr-3"></i> Advantages (Native K8s)</th>
+                    <th class="text-red-400"><i class="fa-solid fa-xmark mr-3"></i> Limitations (The Scale Gap)</th>
                 </tr>
             </thead>
-            <tbody class="text-lg">
+            <tbody class="bg-slate-900/40">
                 <tr><td>Least-privilege enforced</td><td>Certs can't be revoked easily</td></tr>
-                <tr><td>Namespace isolation</td><td>Static kubeconfig files (Risk)</td></tr>
-                <tr><td>No admin credentials needed</td><td>No MFA or Audit trail</td></tr>
-                <tr><td>Native Kubernetes behavior</td><td>Doesn't scale manually</td></tr>
+                <tr><td>Namespace isolation</td><td>Static kubeconfig files (Security Risk)</td></tr>
+                <tr><td>No admin credentials needed</td><td>No native MFA or session recording</td></tr>
+                <tr><td>Native Kubernetes behavior</td><td>Operational overhead at scale</td></tr>
             </tbody>
         </table>
-        <div class="mt-12 text-center p-6 bg-indigo-900/20 border-2 border-dashed border-indigo-500 rounded-xl">
-            <h3 class="text-2xl font-bold text-indigo-300">→ This is exactly what Teleport solves</h3>
-            <p class="text-slate-400">Automated, short-lived, and audited identity-based access.</p>
+        <div class="mt-12 text-center">
+            <p class="text-2xl font-bold text-indigo-400 animate-pulse uppercase tracking-widest">How do we bridge this gap?</p>
         </div>
     </section>
 
-    <div style="left: 2rem;" class="nav-btn" onclick="prevSlide()">← Back</div>
+    <section class="slide">
+        <div class="flex flex-col items-center justify-center h-full text-center space-y-10">
+            <i class="fa-solid fa-shield-halved text-9xl text-indigo-400"></i>
+            <h2 class="text-6xl font-bold">What Teleport Adds</h2>
+            <div class="grid grid-cols-2 gap-8 text-left max-w-5xl">
+                <div class="p-6 bg-slate-800 rounded-xl border-2 border-indigo-500/50">
+                    <p class="text-indigo-300 text-2xl font-bold mb-3">Short-lived Certificates</p>
+                    <p class="text-slate-400 text-xl leading-relaxed">Expire in hours, not years. Eliminates the revocation problem entirely.</p>
+                </div>
+                <div class="p-6 bg-slate-800 rounded-xl border-2 border-indigo-500/50">
+                    <p class="text-indigo-300 text-2xl font-bold mb-3">SSO + MFA Integration</p>
+                    <p class="text-slate-400 text-xl leading-relaxed">Centralized identity via Okta/GitHub. Hardware-backed MFA for every access.</p>
+                </div>
+                <div class="p-6 bg-slate-800 rounded-xl border-2 border-indigo-500/50">
+                    <p class="text-indigo-300 text-2xl font-bold mb-3">Full Audit Transparency</p>
+                    <p class="text-slate-400 text-xl leading-relaxed">Every command, session, and user interaction is recorded and searchable.</p>
+                </div>
+                <div class="p-6 bg-slate-800 rounded-xl border-2 border-indigo-500/50">
+                    <p class="text-indigo-300 text-2xl font-bold mb-3">Seamless Scalability</p>
+                    <p class="text-slate-400 text-xl leading-relaxed">No manual cert management. Access follows the user across any infrastructure.</p>
+                </div>
+            </div>
+            <p class="text-indigo-500 text-2xl font-bold tracking-widest mt-6">LIVE DEMO &rarr;</p>
+        </div>
+    </section>
+
+    <div style="left: 2rem;" class="nav-btn" onclick="prevSlide()">← Prev</div>
     <div style="right: 2rem;" class="nav-btn" onclick="nextSlide()">Next →</div>
 
     <script>
@@ -135,7 +235,7 @@
         }
 
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') nextSlide();
             if (e.key === 'ArrowLeft') prevSlide();
         });
     </script>
