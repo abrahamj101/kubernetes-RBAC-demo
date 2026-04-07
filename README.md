@@ -1,4 +1,4 @@
-# Teleport K8s Demo 
+# Kubernetes RBAC Demo
 
 ## Overview
 This project deploys a Kubernetes cluster using kind and demonstrates
